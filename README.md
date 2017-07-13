@@ -1,5 +1,4 @@
-# training-java8-streams-lambda
-
+# Training Java8 Streams & Lambdas
 Workshop based on https://github.com/victorrentea/java8-voxxed
 
 This does a review of the functionalities of the streams & lambdas.
