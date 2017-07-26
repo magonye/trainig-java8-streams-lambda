@@ -57,7 +57,8 @@ public class OrderLine {
 	public boolean wasDelivered() {
 		return true;
 	}
-	
-	
-	
+
+	public boolean hasStock(){
+		return this.status != Status.IN_STOCK;
+	}
 }

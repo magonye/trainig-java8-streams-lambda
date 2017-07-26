@@ -1,12 +1,12 @@
 package training.java8.order.entity;
 
-import static java.util.stream.Collectors.joining;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import static java.util.stream.Collectors.joining;
 
 
 public class Order {
@@ -115,6 +115,10 @@ public class Order {
 	public Order setCustomer(Customer customer) {
 		this.customer = customer;
 		return this;
+	}
+
+	public boolean hasOrderStock(){
+		return getOrderLines().stream().anyMatch(OrderLine::hasStock);
 	}
 
 	public String toString() {
