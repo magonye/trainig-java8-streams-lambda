@@ -2,6 +2,7 @@ package training.java8.order;
 
 import java.time.LocalDate;
 import java.util.*;
+import java.util.function.Predicate;
 import training.java8.order.dto.AuditDto;
 import training.java8.order.entity.*;
 import training.java8.order.repo.OrderLineRepository;
@@ -15,10 +16,14 @@ public class DirtyLambdas {
 
 	public Set<Customer> getCustomersToNotifyOfOverdueOrders(List<Order> orders, LocalDate warningDate) {
 		return orders.stream()
-			.filter(order -> order.getDeliveryDueDate().isBefore(warningDate))
+			.filter(deliveryDueBefore(warningDate))
 			.filter(Order::hasOrderStock)
 			.map(Order::getCustomer)
 			.collect(toSet());
+	}
+
+	public static Predicate<Order> deliveryDueBefore(LocalDate date){
+		return order -> order.getDeliveryDueDate().isBefore(date);
 	}
 
 	/**
