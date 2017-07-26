@@ -1,26 +1,13 @@
 package training.java8.order;
 
+import java.time.LocalDate;
+import java.util.*;
+import training.java8.order.dto.AuditDto;
+import training.java8.order.entity.*;
+import training.java8.order.repo.OrderLineRepository;
+
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toSet;
-
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import java.util.TreeSet;
-
-import training.java8.order.dto.AuditDto;
-import training.java8.order.entity.Customer;
-import training.java8.order.entity.Order;
-import training.java8.order.entity.OrderLine;
-import training.java8.order.repo.OrderLineRepository;
-import training.java8.order.entity.Audit;
-import training.java8.order.entity.Product;
 
 public class DirtyLambdas {
 	
@@ -28,13 +15,13 @@ public class DirtyLambdas {
 
 	public Set<Customer> getCustomersToNotifyOfOverdueOrders(List<Order> orders, LocalDate warningDate) {
 		return orders.stream()
-			.filter(order -> order.getDeliveryDueDate().isBefore(warningDate) && 
+			.filter(order -> order.getDeliveryDueDate().isBefore(warningDate) &&
 							 order.getOrderLines().stream()
 							 	.anyMatch(line -> line.getStatus() != OrderLine.Status.IN_STOCK))
-			.map((Order o) -> {return o.getCustomer();})
+			.map(Order::getCustomer)
 			.collect(toSet());
 	}
-	
+
 	/**
 	 * No duplicate DTOs should be returned (cf sorting comparator).
 	 */
