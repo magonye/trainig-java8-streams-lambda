@@ -1,19 +1,11 @@
 package training.java8.order;
 
-import static java.util.stream.Collectors.groupingBy;
-import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toMap;
-
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.SortedSet;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
 import training.java8.order.dto.OrderDto;
 import training.java8.order.entity.Customer;
 import training.java8.order.entity.Order;
@@ -86,7 +78,9 @@ public class TransformStreams {
 		for (Order order : customer.getOrders()) {
 			allLines.addAll(order.getOrderLines());
 		}
-		return null; 
+		return customer.getOrders().stream()
+				.flatMap(o -> o.getOrderLines().stream())
+				.collect(Collectors.groupingBy(OrderLine::getProduct,Collectors.summingLong(OrderLine::getCount)));
 		
 	}
 	
