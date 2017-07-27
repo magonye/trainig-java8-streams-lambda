@@ -13,6 +13,8 @@ import training.java8.order.entity.Order.PaymentMethod;
 import training.java8.order.entity.OrderLine;
 import training.java8.order.entity.Product;
 
+import static java.util.stream.Collectors.toList;
+
 public class TransformStreams {
 
 	/**
@@ -85,9 +87,15 @@ public class TransformStreams {
 	 */
 	public List<Product> p07_getAllOrderedProducts(Customer customer) {
 
-		return null; 
+		return customer.getOrders().stream()
+				.flatMap(o -> o.getOrderLines().stream())
+				.map(OrderLine::getProduct)
+				.distinct()
+				//.sorted(Comparator.comparing(Product::getName))
+				.collect(toList());
 	}
-	
+
+
 	
 	/**
 	 * The names of all the products bought by Customer,
