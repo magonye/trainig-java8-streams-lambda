@@ -2,6 +2,7 @@ package training.java8.order;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -119,7 +120,11 @@ public class TransformStreams {
 	 * Sum of all Order.getTotalPrice(), truncated to Long.
 	 */
 	public Long p09_getApproximateTotalOrdersPrice(Customer customer) {
-		return null; 
+
+		return customer.getOrders().stream()
+				.map(Order::getTotalPrice)
+				.reduce(BigDecimal.ZERO, BigDecimal::add)
+				.longValue();
 	}
 	
 	// ----------- IO ---------------
