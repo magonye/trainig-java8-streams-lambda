@@ -1,13 +1,26 @@
 package training.java8.order;
 
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.function.Predicate;
 import training.java8.order.dto.AuditDto;
-import training.java8.order.entity.*;
+import training.java8.order.entity.Audit;
+import training.java8.order.entity.Customer;
+import training.java8.order.entity.Order;
+import training.java8.order.entity.OrderLine;
+import training.java8.order.entity.Product;
 import training.java8.order.repo.OrderLineRepository;
 
 import static java.util.Comparator.comparing;
+import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.Collectors.toSet;
 
 public class DirtyLambdas {
@@ -30,22 +43,27 @@ public class DirtyLambdas {
 	 * No duplicate DTOs should be returned (cf sorting comparator).
 	 */
 	public Collection<AuditDto> toDtos(List<Audit> audits) {
-		Set<AuditDto> dtos = new TreeSet<>(
-				Comparator.comparing(AuditDto::getDate).reversed().thenComparing(Comparator.comparing(AuditDto::getAction))
-						.thenComparing(Comparator.comparing(AuditDto::getUsername)));
-		audits.forEach(audit -> {
-			AuditDto dto = new AuditDto(); // extract mapping logic
-			dto.username = audit.getUser();
-			dto.date = audit.getDate();
-			dto.action = audit.getAction();
-			dtos.add(dto);
-		});
-		return dtos;
-	}
-	
-	
 
-	
+		return audits.stream().
+				map(this::auditToDTO)
+				.collect(toCollection(() -> dtoComparator()));
+	}
+
+	private TreeSet<AuditDto> dtoComparator() {
+		return new TreeSet<>(new TreeSet<>(
+                Comparator.comparing(AuditDto::getDate).reversed().thenComparing(Comparator.comparing(AuditDto::getAction))
+                        .thenComparing(Comparator.comparing(AuditDto::getUsername))));
+	}
+
+	private AuditDto auditToDTO(Audit audit) {
+		AuditDto dto = new AuditDto(); // extract mapping logic
+		dto.username = audit.getUser();
+		dto.date = audit.getDate();
+		dto.action = audit.getAction();
+		return dto;
+	}
+
+
 	public List<Product> getProductsSortedByHits(List<Order> orders) {
 		List<OrderLine> lines1 = new ArrayList<>();
 		orders.stream()
